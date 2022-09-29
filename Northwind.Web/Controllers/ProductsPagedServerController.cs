@@ -49,7 +49,6 @@ namespace Northwind.Web.Controllers
                 p.Supplier.CompanyName.ToLower().Contains(searchString.ToLower()));
             }
 
-
             ViewBag.ProductNameSort = String.IsNullOrEmpty(sortOrder) ? "product_name" : "";
             ViewBag.UnitPriceSort = sortOrder == "price" ? "unit_price" : "price";
 
@@ -112,14 +111,6 @@ namespace Northwind.Web.Controllers
 
                         }
                         return RedirectToAction(nameof(Index));
-
-                        /*var productGroup = new ProductPhotoGroupDto
-                        {
-                            productForCreateDto = productPhotoDto.productForCreateDto,
-                            Photo1 = productPhotoDto.Photo1,
-                            Photo2 = productPhotoDto.Photo2,
-                            Photo3 = productPhotoDto.Photo3
-                        };*/
                     }
                 }
                 catch (Exception ex)
@@ -127,7 +118,7 @@ namespace Northwind.Web.Controllers
                     throw;
                 }
             }
-            return View();
+            return View("Create");
         }
 
         // GET: ProductsService/Details/5
