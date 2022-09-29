@@ -23,13 +23,21 @@ namespace Northwind.Services
             _mapper = mapper;
         }
 
-        public ProductDto CreateProductId(ProductForCreateDto productForCreateDto)
+        public void CreateProductManyPhoto(ProductForCreateDto productForCreateDto, List<ProductPhotoCreateDto> productPhotoCreateDtos)
         {
+            // insert product
             var productModel = _mapper.Map<Product>(productForCreateDto);
             _repositoryManager.ProductRepository.Insert(productModel);
             _repositoryManager.Save();
-            var productDto = _mapper.Map<ProductDto>(productModel);
-            return productDto;
+
+            // insert photo product
+            foreach (var item in productPhotoCreateDtos)
+            {
+                item.PhotoProductId = productModel.ProductId;
+                var photoModel = _mapper.Map<ProductPhoto>(item);
+                _repositoryManager.ProductPhotoRepository.Insert(photoModel);
+            }
+            _repositoryManager.Save();
         }
 
         public void Edit(ProductDto productDto)

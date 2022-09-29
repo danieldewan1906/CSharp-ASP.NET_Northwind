@@ -19,10 +19,12 @@ namespace Northwind.Web.Controllers
     public class ProductsPagedServerController : Controller
     {
         private readonly IServiceManager _context;
+        private readonly IUtilityService _utilityService;
 
-        public ProductsPagedServerController(IServiceManager context)
+        public ProductsPagedServerController(IServiceManager context, IUtilityService utilityService)
         {
             _context = context;
+            _utilityService = utilityService;
         }
 
         // GET: ProductsService4
@@ -75,7 +77,7 @@ namespace Northwind.Web.Controllers
             return View(productDtoPaged);
         }
 
-        [HttpPost]
+        /*[HttpPost]
         public async Task<IActionResult> CreateProductPhoto(ProductPhotoGroupDto productPhotoDto)
         {
             var latestProductId = _context.ProductService.CreateProductId(productPhotoDto.productForCreateDto);
@@ -118,6 +120,35 @@ namespace Northwind.Web.Controllers
                     throw;
                 }
             }
+            return View("Create");
+        }*/
+
+        [HttpPost]
+        public async Task<IActionResult> CreateProductPhoto(ProductPhotoGroupDto productPhotoDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var productPhotoGroup = productPhotoDto;
+                var listPhoto = new List<ProductPhotoCreateDto>();
+                foreach (var itemPhoto in productPhotoGroup.AllPhoto)
+                {
+                    var fileName = _utilityService.UploadSingleFile(itemPhoto);
+                    var convertSize = (Int16)itemPhoto.Length;
+                    var photo = new ProductPhotoCreateDto
+                    {
+                        PhotoFilename = fileName,
+                        PhotoFileSize = (byte)convertSize,
+                        PhotoFileType = itemPhoto.ContentType
+                    };
+                    listPhoto.Add(photo);
+                }
+                _context.ProductService.CreateProductManyPhoto(productPhotoGroup.productForCreateDto, listPhoto);
+                return RedirectToAction(nameof(Index));
+            }
+            var allCategory = await _context.CategoryService.GetAllCategory(false);
+            var allSupplier = await _context.SupplierService.GetAllSupplier(false);
+            ViewData["CategoryId"] = new SelectList(allCategory, "CategoryId", "CategoryName");
+            ViewData["SupplierId"] = new SelectList(allSupplier, "SupplierId", "CompanyName");
             return View("Create");
         }
 

@@ -12,31 +12,36 @@
     @Html.AntiForgeryToken()
     <h4 class="mb-3">Create Product Photos</h4>
     <hr />
-    @Html.ValidationSummary(true,"",new {@class="text-danger"})
+    @Html.ValidationSummary(true,"",new{@class="text-danger"})
     <div class="row g-3">
         <div class="col-md-10">
             @Html.LabelFor(model => model.productForCreateDto.ProductName, htmlAttributes : new{@class="form-label"})
             @Html.TextBox("productForCreateDto.ProductName",string.Empty,new{@placeholder="Product Name",@class="form-control"})
+            @Html.ValidationMessage("productForCreateDto.ProductName",new{@class="text-danger"})
         </div>
     </div>
     <div class="row g-3">
         <div class="col-md-5">
             @Html.LabelFor(model => model.productForCreateDto.CategoryId, htmlAttributes : new{@class="form-label"})
             @Html.DropDownList("productForCreateDto.CategoryId",ViewBag.CategoryId, String.Empty, new {@class="form-control"})
+            @Html.ValidationMessage("productForCreateDto.CategoryId",new{@class="text-danger"})
         </div>
         <div class="col-md-5">
             @Html.LabelFor(model => model.productForCreateDto.SupplierId, htmlAttributes : new{@class="form-label"})
             @Html.DropDownList("productForCreateDto.SupplierId",ViewBag.SupplierId, String.Empty, new {@class="form-control"})
+            @Html.ValidationMessage("productForCreateDto.SupplierId",new{@class="text-danger"})
         </div>
     </div>
     <div class="row g-3">
         <div class="col-md-5">
             @Html.LabelFor(model => model.productForCreateDto.UnitsInStock, htmlAttributes : new{@class="form-label"})
             @Html.TextBox("productForCreateDto.UnitsInStock",string.Empty,new{@placeholder="Units In Stock",@class="form-control"})
+            @Html.ValidationMessage("productForCreateDto.UnitsInStock",new{@class="text-danger"})
         </div>
         <div class="col-md-5">
             @Html.LabelFor(model => model.productForCreateDto.UnitPrice, htmlAttributes : new{@class="form-label"})
             @Html.TextBox("productForCreateDto.UnitPrice",string.Empty,new{@placeholder="Unit Price",@class="form-control"})
+            @Html.ValidationMessage("productForCreateDto.UnitPrice",new{@class="text-danger"})
         </div>
     </div>
     <div class="row g-3">
@@ -48,32 +53,34 @@
     <div class="col-9">
         <div class="row text-center text-lg-start">
             <div class="col-lg-4 col-md-4 col-6">
-                <img id="preview1" style="width:100px;height:100px">
-                @Html.LabelFor(model => model.Photo1, htmlAttributes : new{@class="form-label"})
-                <br>
+                <img id="preview1" style="width:250px;height:250px" src="../Resources/images/default.jpeg">
                 @Html.TextBoxFor(model => model.AllPhoto,"",
                 new{@type="file",@accept="image/*", @onchange="previewImage(this,'preview1')"})
+                <input type="button" onclick="clearPhoto('AllPhoto','preview1')" value="Clear Photo">
+                <br>
+                @Html.ValidationMessage("AllPhoto",new {@class="text-danger"})
             </div>
             <div class="col-lg-4 col-md-4 col-6">
-                <img id="preview2" style="width:100px;height:100px">
-                @Html.LabelFor(model => model.Photo2, htmlAttributes : new{@class="form-label"})
-                <br>
+                <img id="preview2" style="width:250px;height:250px" src="../Resources/images/default.jpeg">
                 @Html.TextBoxFor(model => model.AllPhoto,"",
                 new{@type="file",@accept="image/*", @onchange="previewImage(this,'preview2')"})
+                <input type="button" onclick="clearPhoto('AllPhoto','preview2')" value="Clear Photo">
+                <br>
+                @Html.ValidationMessage("AllPhoto",new {@class="text-danger"})
             </div>
             <div class="col-lg-4 col-md-4 col-6">
-                <img id="preview3" style="width:100px;height:100px">
-                @Html.LabelFor(model => model.Photo3, htmlAttributes : new{@class="form-label"})
-                <br>
+                <img id="preview3" style="width:250px;height:250px" src="../Resources/images/default.jpeg">
                 @Html.TextBoxFor(model => model.AllPhoto,"",
-            new{@type="file",@accept="image/*", @onchange="previewImage(this,'preview3')"})
+                new{@type="file",@accept="image/*", @onchange="previewImage(this,'preview3')"})
+                <input type="button" onclick="clearPhoto('AllPhoto','preview3')" value="Clear Photo">
+                <br>
+                @Html.ValidationMessage("AllPhoto",new {@class="text-danger"})
             </div>
         </div>
     </div>
     <br />
     <button type="submit" class="btn btn-primary">Create</button>
 }
-
 <script>
     function previewImage(elemen, value) {
         //store file image to variable files
@@ -86,16 +93,16 @@
         fileReader.readAsDataURL(files);
 
         //send result base64 image to element html preview1
-        fileReader.onload = function(event){
+        fileReader.onload = function (event) {
             document.getElementById(value).src = event.target.result;
         }
+    }
 
-
+    function clearPhoto(photo, preview){
+        // isi tag input type file jadi kosong lagi atau clear
+        document.getElementById(photo).value='';
+        document.getElementById(preview).src='../Resources/images/default.jpeg';
     }
 </script>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-    }
+

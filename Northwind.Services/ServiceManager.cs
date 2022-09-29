@@ -33,5 +33,7 @@ namespace Northwind.Services
         public IProductService ProductService => _lazyProductService.Value;
 
         public IProductPhotoService ProductPhotoService => _lazyProductPhotoService.Value;
+
+        public IUtilityService UtilityService => throw new NotImplementedException();
     }
 }

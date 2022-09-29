@@ -39,6 +39,7 @@ namespace Northwind.Web
             services.AddScoped<IEmployee, EmployeeRepository>();
             services.AddScoped<IRepositoryManager, RepositoryManager>();
             services.AddScoped<IServiceManager, ServiceManager>();
+            services.AddScoped<IUtilityService, UtilityService>();
             services.AddAutoMapper(typeof(Startup));
 
             // register dbcontext
