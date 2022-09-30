@@ -31,9 +31,9 @@ namespace Northwind.Persistence.Repositories
 
         public async Task<ProductPhoto> GetProductPhotoById(int ProductPhotoId, bool trackChanges)
         {
-            return await FindByCondition(p => p.PhotoId.Equals(ProductPhotoId), trackChanges)
+            return await FindByCondition(p => p.PhotoProductId.Equals(ProductPhotoId), trackChanges)
                 .Include(s => s.PhotoProduct)
-                .SingleOrDefaultAsync();
+                .FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<ProductPhoto>> GetProductPhotoPaged(int pageIndex, int pageSize, bool trackChanges)

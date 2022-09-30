@@ -11,18 +11,18 @@
 
 @using (Html.BeginForm("Index", "ProductsPagedServer", FormMethod.Get))
 {
-    <div>
-        <p>
-            Find By @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { placeholder = "Product or Company Name" })
-            <input type="submit" value="Search" />
-            PageSize : @Html.DropDownList("FetchSize",
-        ViewBag.PagedList as SelectList, "5",
-        new{
-        @class="dropdown",
-        @onchange="getFetchSize(this.value)"
-        }
-        )
-        </p>
+    <div class="input-group mb-1">
+        @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new {@class="form-control", placeholder = "Product or Company Name" })
+        <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Search</button>
+        <span class="input-group-text"> </span>
+        @*@Html.DropDownList("FetchSize",
+    ViewBag.PagedList as SelectList, "5",
+    new{
+    @class="form-control",
+    @placeholder="Fetch Size",
+    @onchange="getFetchSize(this.value)"
+    }
+    )*@
     </div>
 }
 
@@ -87,10 +87,10 @@
         }
     </tbody>
 </table>
-@Html.PagedListPager(Model, page => Url.Action("Index", new{page, CurrentFilter = ViewBag.CurrentFilter}))
+@Html.PagedListPager(Model, page => Url.Action("Index", new{page, currentFilter = ViewBag.CurrentFilter}))
 
-<script>
+@*<script>
     function getFetchSize(value) {
-        document.location.href = "/ProductsPagedServer?&FetchSize=" + value;
+        document.location.href = "/ProductsPagedServer?&FetchSize=" + value + "&currentFilter=@ViewBag.CurrentFilter";
     }
-</script>
+</script>*@

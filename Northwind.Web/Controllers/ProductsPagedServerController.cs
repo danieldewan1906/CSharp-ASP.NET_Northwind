@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Northwind.Contracts.Dto;
 using Northwind.Contracts.Dto.Category;
 using Northwind.Contracts.Dto.Product;
 using Northwind.Domain.Models;
@@ -33,6 +35,8 @@ namespace Northwind.Web.Controllers
         {
             var pageIndex = page ?? 1;
             var pageSize = fetchSize ?? 5;
+
+            // keep state searching value
             if (searchString != null)
             {
                 page = 1;
@@ -43,7 +47,7 @@ namespace Northwind.Web.Controllers
             }
             ViewBag.CurrentFilter = searchString;
 
-            var productForSearch = await _context.ProductService.GetProductPaged(pageIndex, pageSize, false);
+            var productForSearch = await _context.ProductService.GetAllProduct(false);
             var totalRows = productForSearch.Count();
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -72,56 +76,11 @@ namespace Northwind.Web.Controllers
                     break;
             }
 
-            var productDtoPaged = new StaticPagedList<ProductDto>(productForSort, pageIndex, pageSize - (pageSize - 1), totalRows);
+            var productDtoPaged = new StaticPagedList<ProductDto>(productForSearch, pageIndex, pageSize - (pageSize - 1), totalRows);
             ViewBag.PagedList = new SelectList(new List<int> { 8, 15, 20 });
+            ViewBag.PageSize = productDtoPaged;
             return View(productDtoPaged);
         }
-
-        /*[HttpPost]
-        public async Task<IActionResult> CreateProductPhoto(ProductPhotoGroupDto productPhotoDto)
-        {
-            var latestProductId = _context.ProductService.CreateProductId(productPhotoDto.productForCreateDto);
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    var file = productPhotoDto.AllPhoto;
-                    var folderName = Path.Combine("Resources", "images");
-                    var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                    if (file.Count > 0)
-                    {
-                        foreach (var item in file)
-                        {
-                            var fileName = ContentDispositionHeaderValue.Parse(item.ContentDisposition).FileName.Trim('"');
-                            var fullPath = Path.Combine(pathToSave, fileName);
-                            var dbPath = Path.Combine(folderName, fileName);
-                            using (var stream = new FileStream(fullPath, FileMode.Create))
-                            {
-                                item.CopyTo(stream);
-                            }
-
-                            var convertSize = (Int16)item.Length;
-
-                            var productPhoto = new ProductPhotoCreateDto
-                            {
-                                PhotoFilename = fileName,
-                                PhotoFileType = item.ContentType,
-                                PhotoFileSize = (byte)convertSize,
-                                PhotoProductId = latestProductId.ProductId
-                            };
-                            _context.ProductPhotoService.Insert(productPhoto);
-
-                        }
-                        return RedirectToAction(nameof(Index));
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
-            }
-            return View("Create");
-        }*/
 
         [HttpPost]
         public async Task<IActionResult> CreateProductPhoto(ProductPhotoGroupDto productPhotoDto)
@@ -150,6 +109,35 @@ namespace Northwind.Web.Controllers
             ViewData["CategoryId"] = new SelectList(allCategory, "CategoryId", "CategoryName");
             ViewData["SupplierId"] = new SelectList(allSupplier, "SupplierId", "CompanyName");
             return View("Create");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditProductPhoto(ProductPhotoGroupDto productPhotoDto)
+        {
+            /*if (ModelState.IsValid)
+            {
+                var productPhotoGroup = productPhotoDto;
+                var listPhoto = new List<ProductPhotoCreateDto>();
+                foreach (var itemPhoto in productPhotoGroup.AllPhoto)
+                {
+                    var fileName = _utilityService.UploadSingleFile(itemPhoto);
+                    var convertSize = (Int16)itemPhoto.Length;
+                    var photo = new ProductPhotoCreateDto
+                    {
+                        PhotoFilename = fileName,
+                        PhotoFileSize = (byte)convertSize,
+                        PhotoFileType = itemPhoto.ContentType
+                    };
+                    listPhoto.Add(photo);
+                }
+                _context.ProductService.CreateProductManyPhoto(productPhotoGroup.productForCreateDto, listPhoto);
+                return RedirectToAction(nameof(Index));
+            }*/
+            /*var allCategory = await _context.CategoryService.GetAllCategory(false);
+            var allSupplier = await _context.SupplierService.GetAllSupplier(false);
+            ViewData["CategoryId"] = new SelectList(allCategory, "CategoryId", "CategoryName");
+            ViewData["SupplierId"] = new SelectList(allSupplier, "SupplierId", "CompanyName");*/
+            return View("Edit");
         }
 
         // GET: ProductsService/Details/5
@@ -181,7 +169,7 @@ namespace Northwind.Web.Controllers
         // POST: ProductsService/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        /*[HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ProductName,SupplierId,CategoryId,QuantityPerUnit,UnitPrice,UnitsInStock,UnitsOnOrder,ReorderLevel,Discontinued")] ProductForCreateDto product)
         {
@@ -196,7 +184,7 @@ namespace Northwind.Web.Controllers
             ViewData["CategoryId"] = new SelectList(allCategory, "CategoryId", "CategoryName", product.CategoryId);
             ViewData["SupplierId"] = new SelectList(allSupplier, "SupplierId", "CompanyName", product.SupplierId);
             return View(product);
-        }
+        }*/
 
         // GET: ProductsService/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -205,22 +193,22 @@ namespace Northwind.Web.Controllers
             {
                 return NotFound();
             }
-            var product = await _context.ProductService.GetProductById((int)id, true);
+            var product = await _context.ProductService.GetProductPhotoById((int)id, true);
             if (product == null)
             {
                 return NotFound();
             }
-            var allCategory = await _context.CategoryService.GetAllCategory(false);
+            /*var allCategory = await _context.CategoryService.GetAllCategory(false);
             var allSupplier = await _context.SupplierService.GetAllSupplier(false);
-            ViewData["CategoryId"] = new SelectList(allCategory, "CategoryId", "CategoryName", product.CategoryId);
-            ViewData["SupplierId"] = new SelectList(allSupplier, "SupplierId", "CompanyName", product.SupplierId);
+            ViewData["CategoryId"] = new SelectList(allCategory, "CategoryId", "CategoryName", product.productForCreateDto.CategoryId);
+            ViewData["SupplierId"] = new SelectList(allSupplier, "SupplierId", "CompanyName", product.productForCreateDto.SupplierId);*/
             return View(product);
         }
 
         // POST: ProductsService/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        /*[HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,SupplierId,CategoryId,QuantityPerUnit,UnitPrice,UnitsInStock,UnitsOnOrder,ReorderLevel,Discontinued")] ProductDto product)
         {
@@ -246,7 +234,7 @@ namespace Northwind.Web.Controllers
             ViewData["CategoryId"] = new SelectList(allCategory, "CategoryId", "CategoryName", product.CategoryId);
             ViewData["SupplierId"] = new SelectList(allSupplier, "SupplierId", "CompanyName", product.SupplierId);
             return View(product);
-        }
+        }*/
 
         // GET: ProductsService/Delete/5
         public async Task<IActionResult> Delete(int? id)

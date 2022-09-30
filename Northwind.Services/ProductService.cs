@@ -68,6 +68,13 @@ namespace Northwind.Services
             return productDto;
         }
 
+        public async Task<ProductPhotoGroupDto> GetProductPhotoById(int productId, bool trackChanges)
+        {
+            var productModel = await _repositoryManager.ProductPhotoRepository.GetProductPhotoById(productId, trackChanges);
+            var productDto = _mapper.Map<ProductPhotoGroupDto>(productModel);
+            return productDto;
+        }
+
         public void Insert(ProductForCreateDto productForCreateDto)
         {
             var insert = _mapper.Map<Product>(productForCreateDto);
