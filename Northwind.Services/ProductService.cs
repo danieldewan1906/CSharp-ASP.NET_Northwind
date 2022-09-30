@@ -61,6 +61,20 @@ namespace Northwind.Services
             return productDto;
         }
 
+        public async Task<IEnumerable<ProductDto>> GetProductOnSales(bool trackChanges)
+        {
+            var productModel = await _repositoryManager.ProductRepository.GetProductOnSales(trackChanges);
+            var productDto = _mapper.Map<IEnumerable<ProductDto>>(productModel);
+            return productDto;
+        }
+
+        public async Task<ProductDto> GetProductOnSalesById(int productId, bool trackChanges)
+        {
+            var productModel = await _repositoryManager.ProductRepository.GetProductOnSalesById(productId, trackChanges);
+            var productDto = _mapper.Map<ProductDto>(productModel);
+            return productDto;
+        }
+
         public async Task<IEnumerable<ProductDto>> GetProductPaged(int pageIndex, int pageSize, bool trackChanges)
         {
             var productModel = await _repositoryManager.ProductRepository.GetProductPaged(pageIndex, pageSize, trackChanges);

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -39,6 +40,30 @@ namespace Northwind.Persistence.Repositories
                 .Include(c => c.Category)
                 .Include(s => s.Supplier)
                 .SingleOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<Product>> GetProductOnSales(bool trackChanges)
+        {
+            /*select * from products p 
+             * where exists(select * from ProductPhotos pp 
+             * where pp.PhotoProductId = p.ProductID)*/
+
+            // diatas query SQL dibawah query by c#
+
+            var product = await FindAll(trackChanges)
+                .Where(x => x.ProductPhotos.Any(y => y.PhotoProductId == x.ProductId))
+                .Include(p => p.ProductPhotos)
+                .ToListAsync();
+            return product;
+        }
+
+        public async Task<Product> GetProductOnSalesById(int productId, bool trackChanges)
+        {
+            var products = await FindByCondition(x => x.ProductId.Equals(productId), trackChanges)
+                .Where(y => y.ProductPhotos.Any(p => p.PhotoProductId == productId))
+                .Include(a => a.ProductPhotos)
+                .SingleOrDefaultAsync();
+            return products;
         }
 
         public async Task<IEnumerable<Product>> GetProductPaged(int pageIndex, int pageSize, bool trackChanges)

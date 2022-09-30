@@ -35,6 +35,7 @@ namespace Northwind.Web.Controllers
         {
             var pageIndex = page ?? 1;
             var pageSize = fetchSize ?? 5;
+            //ViewBag.psize = pageSize;
 
             // keep state searching value
             if (searchString != null)
@@ -76,11 +77,16 @@ namespace Northwind.Web.Controllers
                     break;
             }
 
-            var productDtoPaged = new StaticPagedList<ProductDto>(productForSearch, pageIndex, pageSize - (pageSize - 1), totalRows);
+            var productDtoPaged = new StaticPagedList<ProductDto>(productForSort, pageIndex, pageSize - (pageSize - 1), totalRows);
+            ViewBag.psize = productDtoPaged.Count;
             ViewBag.PagedList = new SelectList(new List<int> { 8, 15, 20 });
-            ViewBag.PageSize = productDtoPaged;
             return View(productDtoPaged);
         }
+        /*public async Task<IActionResult> Index(int? page)
+        {
+            
+            return View();
+        }*/
 
         [HttpPost]
         public async Task<IActionResult> CreateProductPhoto(ProductPhotoGroupDto productPhotoDto)
@@ -199,9 +205,9 @@ namespace Northwind.Web.Controllers
                 return NotFound();
             }
             /*var allCategory = await _context.CategoryService.GetAllCategory(false);
-            var allSupplier = await _context.SupplierService.GetAllSupplier(false);
-            ViewData["CategoryId"] = new SelectList(allCategory, "CategoryId", "CategoryName", product.productForCreateDto.CategoryId);
-            ViewData["SupplierId"] = new SelectList(allSupplier, "SupplierId", "CompanyName", product.productForCreateDto.SupplierId);*/
+            var allSupplier = await _context.SupplierService.GetAllSupplier(false);*/
+            /*ViewData["CategoryId"] = new SelectList(allCategory, "CategoryId", "CategoryName", product.productForCreateDto.CategoryId);*/
+            /*ViewData["SupplierId"] = new SelectList(allSupplier, "SupplierId", "CompanyName", product.productForCreateDto.SupplierId);*/
             return View(product);
         }
 

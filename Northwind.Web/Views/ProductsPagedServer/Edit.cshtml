@@ -20,18 +20,18 @@
             @Html.ValidationMessage("productDto.ProductName",new{@class="text-danger"})
         </div>
     </div>
-    @*<div class="row g-3">
+    <div class="row g-3">
         <div class="col-md-5">
             @Html.LabelFor(model => model.productDto.CategoryId, htmlAttributes : new{@class="form-label"})
-            @Html.DropDownList("productDto.Category.CategoryName", Model.productDto.Category.CategoryName)
+            @Html.TextBox("productDto.Category.CategoryName", Model.productDto.Category.CategoryName,new{@class="form-control"})
             @Html.ValidationMessage("productDto.CategoryId",new{@class="text-danger"})
         </div>
         <div class="col-md-5">
             @Html.LabelFor(model => model.productDto.SupplierId, htmlAttributes : new{@class="form-label"})
-            @Html.DropDownList("productDto.Supplier.CompanyName",Model.productDto.Supplier.CompanyName)
+            @Html.TextBox("productDto.Supplier.CompanyName",Model.productDto.Supplier.CompanyName,new{@class="form-control"})
             @Html.ValidationMessage("productDto.SupplierId",new{@class="text-danger"})
         </div>
-    </div>*@
+    </div>
     <div class="row g-3">
         <div class="col-md-5">
             @Html.LabelFor(model => model.productDto.UnitsInStock, htmlAttributes : new{@class="form-label"})
@@ -53,7 +53,7 @@
     <div class="col-9">
         <div class="row text-center text-lg-start">
             <div class="col-lg-4 col-md-4 col-6">
-                <img id="preview1" style="width:250px;height:250px" src="../Resources/images/default.jpeg">
+                <img id="preview1" style="width:250px;height:250px" src="@Url.Content("~/Resources/images/" + Model.productDto.ProductPhotos.FirstOrDefault().PhotoFilename)">
                 @Html.TextBoxFor(model => model.AllPhoto,"",
             new{@type="file",@accept="image/*", @onchange="previewImage(this,'preview1')"})
                 <input type="button" onclick="clearPhoto('AllPhoto','preview1')" value="Clear Photo">
