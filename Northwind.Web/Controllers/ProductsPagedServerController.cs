@@ -30,12 +30,11 @@ namespace Northwind.Web.Controllers
         }
 
         // GET: ProductsService4
-        public async Task<IActionResult> Index(string searchString, string currentFilter,
+        /*public async Task<IActionResult> Index(string searchString, string currentFilter,
             string sortOrder, int? page, int? fetchSize)
         {
             var pageIndex = page ?? 1;
             var pageSize = fetchSize ?? 5;
-            //ViewBag.psize = pageSize;
 
             // keep state searching value
             if (searchString != null)
@@ -48,7 +47,7 @@ namespace Northwind.Web.Controllers
             }
             ViewBag.CurrentFilter = searchString;
 
-            var productForSearch = await _context.ProductService.GetAllProduct(false);
+            var productForSearch = await _context.ProductService.GetProductPaged(pageIndex, pageSize, false);
             var totalRows = productForSearch.Count();
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -77,16 +76,77 @@ namespace Northwind.Web.Controllers
                     break;
             }
 
-            var productDtoPaged = new StaticPagedList<ProductDto>(productForSort, pageIndex, pageSize - (pageSize - 1), totalRows);
-            ViewBag.psize = productDtoPaged.Count;
+            var productDtoPaged = new StaticPagedList<ProductDto>(productForSearch, pageIndex, pageSize - (pageSize - 1), totalRows);
+            ViewBag.psize = productDtoPaged;
             ViewBag.PagedList = new SelectList(new List<int> { 8, 15, 20 });
             return View(productDtoPaged);
-        }
-        /*public async Task<IActionResult> Index(int? page)
-        {
-            
-            return View();
         }*/
+        public async Task<IActionResult> Index(string searchString, string currentFilter,
+            string sortOrder, int? page, int? pageSize)
+        {
+            // set page
+            int pageIndex = 1;
+            pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
+            // default size is 5 otherwise take pageSize value  
+            int defaSize = (pageSize ?? 5);
+            ViewBag.psize = defaSize;
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+            ViewBag.CurrentFilter = searchString;
+
+            //Create a instance of our DataContext  
+            var products = await _context.ProductService.GetAllProduct(false);
+            IPagedList<ProductDto> productDtos = null;
+
+            // search page by product name and company name
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                products = products.Where(p => p.ProductName.ToLower().Contains(searchString.ToLower()) ||
+                p.Supplier.CompanyName.ToLower().Contains(searchString.ToLower()));
+            }
+
+            //Dropdownlist code for PageSize selection  
+            //In View Attach this  
+            ViewBag.PageSize = new List<SelectListItem>()
+            {
+                new SelectListItem() { Value="5", Text= "5" },
+                new SelectListItem() { Value="10", Text= "10" },
+                new SelectListItem() { Value="15", Text= "15" },
+                new SelectListItem() { Value="20", Text= "20" }
+            };
+
+            // Sort Data
+            /*ViewBag.ProductNameSort = String.IsNullOrEmpty(sortOrder) ? "product_name" : "";
+            ViewBag.UnitPriceSort = sortOrder == "price" ? "unit_price" : "price";
+
+            switch (sortOrder)
+            {
+                case "product_name":
+                    products = products.OrderByDescending(p => p.ProductName);
+                    break;
+                case "price":
+                    products = products.OrderBy(p => p.UnitPrice);
+                    break;
+                case "unit_price":
+                    products = products.OrderByDescending(p => p.UnitPrice);
+                    break;
+                default:
+                    products = products.OrderBy(p => p.ProductId);
+                    break;
+            }*/
+
+            //Alloting nos. of records as per pagesize and page index.  
+            productDtos = products.ToPagedList(pageIndex, defaSize);
+
+            return View(productDtos);
+        }
 
         [HttpPost]
         public async Task<IActionResult> CreateProductPhoto(ProductPhotoGroupDto productPhotoDto)
