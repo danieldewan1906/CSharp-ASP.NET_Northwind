@@ -1,4 +1,4 @@
-﻿@model Northwind.Contracts.Dto.Product.ProductPhotoGroupDto
+﻿@model Northwind.Contracts.Dto.Product.ProductDto
 
 @{
     ViewData["Title"] = "Edit";
@@ -10,72 +10,75 @@
 , new { @enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
-    <h4 class="mb-3">Edit Product Photos</h4>
+    <h4 class="mb-3">Edit Product</h4>
     <hr />
     @Html.ValidationSummary(true,"",new{@class="text-danger"})
     <div class="row g-3">
         <div class="col-md-10">
-            @Html.LabelFor(model => model.productDto.ProductName, htmlAttributes : new{@class="form-label"})
-            @Html.TextBox("productDto.ProductName",Model.productDto.ProductName,new{@class="form-control"})
-            @Html.ValidationMessage("productDto.ProductName",new{@class="text-danger"})
+            @Html.LabelFor(model => model.ProductName, htmlAttributes : new{@class="form-label"})
+            @Html.TextBox("ProductName",Model.ProductName,new{@class="form-control"})
+            @Html.ValidationMessage("ProductName",new{@class="text-danger"})
         </div>
     </div>
     <div class="row g-3">
         <div class="col-md-5">
-            @Html.LabelFor(model => model.productDto.CategoryId, htmlAttributes : new{@class="form-label"})
-            @Html.TextBox("productDto.Category.CategoryName", Model.productDto.Category.CategoryName,new{@class="form-control"})
-            @Html.ValidationMessage("productDto.CategoryId",new{@class="text-danger"})
+            @Html.LabelFor(model => model.CategoryId, htmlAttributes : new{@class="form-label"})
+            @Html.TextBox("Category.CategoryName",Model.Category.CategoryName,new{@class="form-control", @readonly="readonly"})
+            @Html.ValidationMessage("CategoryId",new{@class="text-danger"})
         </div>
         <div class="col-md-5">
-            @Html.LabelFor(model => model.productDto.SupplierId, htmlAttributes : new{@class="form-label"})
-            @Html.TextBox("productDto.Supplier.CompanyName",Model.productDto.Supplier.CompanyName,new{@class="form-control"})
-            @Html.ValidationMessage("productDto.SupplierId",new{@class="text-danger"})
+            @Html.LabelFor(model => model.SupplierId, htmlAttributes : new{@class="form-label"})
+            @Html.TextBox("Supplier.CompanyName",Model.Supplier.CompanyName,new{@class="form-control", @readonly="readonly"})
+            @Html.ValidationMessage("SupplierId",new{@class="text-danger"})
         </div>
     </div>
     <div class="row g-3">
         <div class="col-md-5">
-            @Html.LabelFor(model => model.productDto.UnitsInStock, htmlAttributes : new{@class="form-label"})
-            @Html.TextBox("productDto.UnitsInStock",Model.productDto.UnitsInStock,new{@class="form-control"})
-            @Html.ValidationMessage("productDto.UnitsInStock",new{@class="text-danger"})
+            @Html.LabelFor(model => model.UnitsInStock, htmlAttributes : new{@class="form-label"})
+            @Html.TextBox("UnitsInStock",Model.UnitsInStock,new{@class="form-control"})
+            @Html.ValidationMessage("UnitsInStock",new{@class="text-danger"})
         </div>
         <div class="col-md-5">
-            @Html.LabelFor(model => model.productDto.UnitPrice, htmlAttributes : new{@class="form-label"})
-            @Html.TextBox("productDto.UnitPrice",Model.productDto.UnitPrice,new{@class="form-control"})
-            @Html.ValidationMessage("productDto.UnitPrice",new{@class="text-danger"})
+            @Html.LabelFor(model => model.UnitPrice, htmlAttributes : new{@class="form-label"})
+            @Html.TextBox("UnitPrice",Model.UnitPrice,new{@class="form-control"})
+            @Html.ValidationMessage("UnitPrice",new{@class="text-danger"})
+        </div>
+    </div>
+    <div class="row g-3">
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.QuantityPerUnit, htmlAttributes : new{@class="form-label"})
+            @Html.TextBox("QuantityPerUnit",string.Empty,new{@class="form-control"})
+            @Html.ValidationMessage("QuantityPerUnit",new{@class="text-danger"})
+        </div>
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.UnitsOnOrder, htmlAttributes : new{@class="form-label"})
+            @Html.TextBox("UnitsOnOrder",string.Empty,new{@class="form-control"})
+            @Html.ValidationMessage("UnitsOnOrder",new{@class="text-danger"})
+        </div>
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.ReorderLevel, htmlAttributes : new{@class="form-label"})
+            @Html.TextBox("ReorderLevel",string.Empty,new{@class="form-control"})
+            @Html.ValidationMessage("ReorderLevel",new{@class="text-danger"})
         </div>
     </div>
     <div class="row g-3">
         <div class="col-md-10">
-            @Html.CheckBox("productDto.Discontinued",Model.productDto.Discontinued,new{@class="form-check-input"})
-            @Html.LabelFor(model => model.productDto.Discontinued, htmlAttributes : new{@class="form-label"})
+            @Html.CheckBox("Discontinued",Model.Discontinued,new{@class="form-check-input"})
+            @Html.LabelFor(model => model.Discontinued, htmlAttributes : new{@class="form-label"})
         </div>
     </div>
     <div class="col-9">
         <div class="row text-center text-lg-start">
+            @foreach(var item in Model.ProductPhotos){
             <div class="col-lg-4 col-md-4 col-6">
-                <img id="preview1" style="width:250px;height:250px" src="@Url.Content("~/Resources/images/" + Model.productDto.ProductPhotos.FirstOrDefault().PhotoFilename)">
-                @Html.TextBoxFor(model => model.AllPhoto,"",
+                <img id="preview1" style="width:250px;height:250px" src="@Url.Content("~/Resources/images/" + item.PhotoFilename)" alt="Card image cap">
+                    @Html.TextBox("PhotoFilename",item.PhotoFilename,
             new{@type="file",@accept="image/*", @onchange="previewImage(this,'preview1')"})
                 <input type="button" onclick="clearPhoto('AllPhoto','preview1')" value="Clear Photo">
                 <br>
-                @Html.ValidationMessage("AllPhoto",new {@class="text-danger"})
+                    @Html.ValidationMessage("ProductPhotos",new {@class="text-danger"})
             </div>
-            <div class="col-lg-4 col-md-4 col-6">
-                <img id="preview2" style="width:250px;height:250px" src="../Resources/images/default.jpeg">
-                @Html.TextBoxFor(model => model.AllPhoto,"",
-            new{@type="file",@accept="image/*", @onchange="previewImage(this,'preview2')"})
-                <input type="button" onclick="clearPhoto('AllPhoto','preview2')" value="Clear Photo">
-                <br>
-                @Html.ValidationMessage("AllPhoto",new {@class="text-danger"})
-            </div>
-            <div class="col-lg-4 col-md-4 col-6">
-                <img id="preview3" style="width:250px;height:250px" src="../Resources/images/default.jpeg">
-                @Html.TextBoxFor(model => model.AllPhoto,"",
-            new{@type="file",@accept="image/*", @onchange="previewImage(this,'preview3')"})
-                <input type="button" onclick="clearPhoto('AllPhoto','preview3')" value="Clear Photo">
-                <br>
-                @Html.ValidationMessage("AllPhoto",new {@class="text-danger"})
-            </div>
+            }
         </div>
     </div>
     <br />

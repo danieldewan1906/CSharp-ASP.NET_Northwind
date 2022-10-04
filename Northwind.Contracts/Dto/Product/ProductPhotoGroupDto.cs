@@ -11,22 +11,10 @@ namespace Northwind.Contracts.Dto.Product
     public class ProductPhotoGroupDto
     {
         public ProductForCreateDto productForCreateDto { get; set; }
-
         public ProductDto productDto { get; set; }
-
-        [Display(Name = "Photo 1")]
-        public IFormFile Photo1 { get; set; }
-
-        [Display(Name = "Photo 2")]
-        public IFormFile Photo2 { get; set; }
-
-        [Display(Name = "Photo 3")]
-        public IFormFile Photo3 { get; set; }
 
         [Required(ErrorMessage = "Please Insert Photo")]
         public List<IFormFile> AllPhoto { get; set; }
-
-
 
     }
 }

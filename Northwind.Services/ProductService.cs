@@ -47,6 +47,23 @@ namespace Northwind.Services
             _repositoryManager.Save();
         }
 
+        public void EditProductPhoto(ProductDto productDto, List<ProductPhotoDto> productPhotoDto)
+        {
+            // insert product
+            var productModel = _mapper.Map<Product>(productDto);
+            _repositoryManager.ProductRepository.Edit(productModel);
+            _repositoryManager.Save();
+
+            // insert photo product
+            foreach (var item in productPhotoDto)
+            {
+                item.PhotoProductId = productModel.ProductId;
+                var photoModel = _mapper.Map<ProductPhoto>(item);
+                _repositoryManager.ProductPhotoRepository.Edit(photoModel);
+            }
+            _repositoryManager.Save();
+        }
+
         public async Task<IEnumerable<ProductDto>> GetAllProduct(bool trackChanges)
         {
             var productModel = await _repositoryManager.ProductRepository.GetAllProduct(trackChanges);
@@ -68,24 +85,24 @@ namespace Northwind.Services
             return productDto;
         }
 
-        public async Task<ProductDto> GetProductOnSalesById(int productId, bool trackChanges)
+        public async Task<ProductDto> GetProductOrderOnSalesById(int productId, bool trackChanges)
         {
-            var productModel = await _repositoryManager.ProductRepository.GetProductOnSalesById(productId, trackChanges);
+            var productModel = await _repositoryManager.ProductRepository.GetProductOrderOnSalesById(productId, trackChanges);
             var productDto = _mapper.Map<ProductDto>(productModel);
             return productDto;
         }
 
-        public async Task<IEnumerable<ProductDto>> GetProductPaged(int pageIndex, int pageSize, bool trackChanges)
-        {
-            var productModel = await _repositoryManager.ProductRepository.GetProductPaged(pageIndex, pageSize, trackChanges);
-            var productDto = _mapper.Map<IEnumerable<ProductDto>>(productModel);
-            return productDto;
-        }
-
-        public async Task<ProductPhotoGroupDto> GetProductPhotoById(int productId, bool trackChanges)
+        public async Task<ProductPhotoGroupDto> GetProductPhotoGroupById(int productId, bool trackChanges)
         {
             var productModel = await _repositoryManager.ProductPhotoRepository.GetProductPhotoById(productId, trackChanges);
             var productDto = _mapper.Map<ProductPhotoGroupDto>(productModel);
+            return productDto;
+        }
+
+        public async Task<ProductDto> GetProductPhotoOnSalesById(int productId, bool trackChanges)
+        {
+            var productModel = await _repositoryManager.ProductRepository.GetProductPhotoOnSalesById(productId, trackChanges);
+            var productDto = _mapper.Map<ProductDto>(productModel);
             return productDto;
         }
 

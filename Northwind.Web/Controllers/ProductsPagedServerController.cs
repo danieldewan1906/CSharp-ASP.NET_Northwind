@@ -30,57 +30,6 @@ namespace Northwind.Web.Controllers
         }
 
         // GET: ProductsService4
-        /*public async Task<IActionResult> Index(string searchString, string currentFilter,
-            string sortOrder, int? page, int? fetchSize)
-        {
-            var pageIndex = page ?? 1;
-            var pageSize = fetchSize ?? 5;
-
-            // keep state searching value
-            if (searchString != null)
-            {
-                page = 1;
-            }
-            else
-            {
-                searchString = currentFilter;
-            }
-            ViewBag.CurrentFilter = searchString;
-
-            var productForSearch = await _context.ProductService.GetProductPaged(pageIndex, pageSize, false);
-            var totalRows = productForSearch.Count();
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                productForSearch = productForSearch.Where(p => p.ProductName.ToLower().Contains(searchString.ToLower()) ||
-                p.Supplier.CompanyName.ToLower().Contains(searchString.ToLower()));
-            }
-
-            ViewBag.ProductNameSort = String.IsNullOrEmpty(sortOrder) ? "product_name" : "";
-            ViewBag.UnitPriceSort = sortOrder == "price" ? "unit_price" : "price";
-
-            var productForSort = from p in productForSearch
-                                 select p;
-            switch (sortOrder)
-            {
-                case "product_name":
-                    productForSort = productForSort.OrderByDescending(p => p.ProductName);
-                    break;
-                case "price":
-                    productForSort = productForSort.OrderBy(p => p.UnitPrice);
-                    break;
-                case "unit_price":
-                    productForSort = productForSort.OrderByDescending(p => p.UnitPrice);
-                    break;
-                default:
-                    productForSort = productForSort.OrderBy(p => p.ProductName);
-                    break;
-            }
-
-            var productDtoPaged = new StaticPagedList<ProductDto>(productForSearch, pageIndex, pageSize - (pageSize - 1), totalRows);
-            ViewBag.psize = productDtoPaged;
-            ViewBag.PagedList = new SelectList(new List<int> { 8, 15, 20 });
-            return View(productDtoPaged);
-        }*/
         public async Task<IActionResult> Index(string searchString, string currentFilter,
             string sortOrder, int? page, int? pageSize)
         {
@@ -123,7 +72,7 @@ namespace Northwind.Web.Controllers
             };
 
             // Sort Data
-            /*ViewBag.ProductNameSort = String.IsNullOrEmpty(sortOrder) ? "product_name" : "";
+            ViewBag.ProductNameSort = String.IsNullOrEmpty(sortOrder) ? "product_name" : "";
             ViewBag.UnitPriceSort = sortOrder == "price" ? "unit_price" : "price";
 
             switch (sortOrder)
@@ -138,9 +87,9 @@ namespace Northwind.Web.Controllers
                     products = products.OrderByDescending(p => p.UnitPrice);
                     break;
                 default:
-                    products = products.OrderBy(p => p.ProductId);
+                    products = products.OrderBy(p => p.ProductName);
                     break;
-            }*/
+            }
 
             //Alloting nos. of records as per pagesize and page index.  
             productDtos = products.ToPagedList(pageIndex, defaSize);
@@ -178,17 +127,19 @@ namespace Northwind.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditProductPhoto(ProductPhotoGroupDto productPhotoDto)
+        public async Task<IActionResult> EditProductPhoto(ProductDto productDto)
         {
-            /*if (ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                var productPhotoGroup = productPhotoDto;
-                var listPhoto = new List<ProductPhotoCreateDto>();
+                var products = productDto;
+                _context.ProductService.Edit(products);
+                /*var productPhotoGroup = productPhotoDto;
+                var listPhoto = new List<ProductPhotoDto>();
                 foreach (var itemPhoto in productPhotoGroup.AllPhoto)
                 {
                     var fileName = _utilityService.UploadSingleFile(itemPhoto);
                     var convertSize = (Int16)itemPhoto.Length;
-                    var photo = new ProductPhotoCreateDto
+                    var photo = new ProductPhotoDto
                     {
                         PhotoFilename = fileName,
                         PhotoFileSize = (byte)convertSize,
@@ -196,13 +147,13 @@ namespace Northwind.Web.Controllers
                     };
                     listPhoto.Add(photo);
                 }
-                _context.ProductService.CreateProductManyPhoto(productPhotoGroup.productForCreateDto, listPhoto);
+                _context.ProductService.EditProductPhoto(productPhotoGroup.productDto, listPhoto);*/
                 return RedirectToAction(nameof(Index));
-            }*/
-            /*var allCategory = await _context.CategoryService.GetAllCategory(false);
+            }
+            var allCategory = await _context.CategoryService.GetAllCategory(false);
             var allSupplier = await _context.SupplierService.GetAllSupplier(false);
             ViewData["CategoryId"] = new SelectList(allCategory, "CategoryId", "CategoryName");
-            ViewData["SupplierId"] = new SelectList(allSupplier, "SupplierId", "CompanyName");*/
+            ViewData["SupplierId"] = new SelectList(allSupplier, "SupplierId", "CompanyName");
             return View("Edit");
         }
 
@@ -213,7 +164,7 @@ namespace Northwind.Web.Controllers
             {
                 return NotFound();
             }
-            var product = await _context.ProductService.GetProductById((int)id, false);
+            var product = await _context.ProductService.GetProductPhotoOnSalesById((int)id, false);
             if (product == null)
             {
                 return NotFound();
@@ -259,15 +210,15 @@ namespace Northwind.Web.Controllers
             {
                 return NotFound();
             }
-            var product = await _context.ProductService.GetProductPhotoById((int)id, true);
+            var product = await _context.ProductService.GetProductPhotoOnSalesById((int)id, true);
             if (product == null)
             {
                 return NotFound();
             }
-            /*var allCategory = await _context.CategoryService.GetAllCategory(false);
-            var allSupplier = await _context.SupplierService.GetAllSupplier(false);*/
-            /*ViewData["CategoryId"] = new SelectList(allCategory, "CategoryId", "CategoryName", product.productForCreateDto.CategoryId);*/
-            /*ViewData["SupplierId"] = new SelectList(allSupplier, "SupplierId", "CompanyName", product.productForCreateDto.SupplierId);*/
+            var allCategory = await _context.CategoryService.GetAllCategory(false);
+            var allSupplier = await _context.SupplierService.GetAllSupplier(false);
+            ViewData["CategoryId"] = new SelectList(allCategory, "CategoryId", "CategoryName", product.CategoryId);
+            ViewData["SupplierId"] = new SelectList(allSupplier, "SupplierId", "CompanyName", product.SupplierId);
             return View(product);
         }
 

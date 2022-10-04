@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Northwind.Contracts.Dto.Category;
+using Northwind.Contracts.Dto.Order;
+using Northwind.Contracts.Dto.OrderDetail;
 using Northwind.Contracts.Dto.Product;
 using Northwind.Contracts.Dto.Supplier;
 using Northwind.Domain.Models;
@@ -17,12 +19,20 @@ namespace Northwind.Web.Mapping
             CreateMap<Supplier, SupplierForCreateDto>().ReverseMap();
 
             CreateMap<Product, ProductDto>().ReverseMap();
+            CreateMap<Product, ProductPhotoGroupDto>().ReverseMap();
             CreateMap<Product, ProductForCreateDto>().ReverseMap();
 
             CreateMap<ProductPhoto, ProductPhotoDto>().ReverseMap();
+            CreateMap<ProductPhoto, ProductPhotoGroupDto>().ReverseMap();
             CreateMap<ProductPhoto, ProductPhotoCreateDto>().ReverseMap();
 
-            CreateMap<ProductPhoto, ProductPhotoGroupDto>()
+            CreateMap<OrderDetail, OrderDetailDto>().ReverseMap();
+            CreateMap<OrderDetail, OrderDetailForCreateDto>().ReverseMap();
+
+            CreateMap<Order, OrderDto>().ReverseMap();
+            CreateMap<Order, OrderForCreateDto>().ReverseMap();
+
+            /*CreateMap<ProductPhoto, ProductPhotoGroupDto>()
                 .ForPath(p => p.productDto.ProductName, pp => pp.MapFrom(p => p.PhotoProduct.ProductName))
                 .ForPath(p => p.productDto.Supplier.CompanyName, pp => pp.MapFrom(p => p.PhotoProduct.Supplier.CompanyName))
                 .ForPath(p => p.productDto.Category.CategoryName, pp => pp.MapFrom(p => p.PhotoProduct.Category.CategoryName))
@@ -31,7 +41,7 @@ namespace Northwind.Web.Mapping
                 .ForPath(p => p.productDto.UnitsInStock, pp => pp.MapFrom(p => p.PhotoProduct.UnitsInStock))
                 .ForPath(p => p.productDto.Discontinued, pp => pp.MapFrom(p => p.PhotoProduct.Discontinued))
 
-                .ReverseMap();
+                .ReverseMap();*/
         }
     }
 }

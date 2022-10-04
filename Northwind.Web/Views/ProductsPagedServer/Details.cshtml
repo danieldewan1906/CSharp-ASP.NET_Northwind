@@ -4,69 +4,99 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>Product</h4>
+@using (Html.BeginForm("Details"
+, "ProductsPagedServer"
+, FormMethod.Post
+, new { @enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <h4 class="mb-3">Detail Product</h4>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ProductName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ProductName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.QuantityPerUnit)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.QuantityPerUnit)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UnitPrice)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UnitPrice)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UnitsInStock)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UnitsInStock)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UnitsOnOrder)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UnitsOnOrder)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ReorderLevel)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ReorderLevel)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Discontinued)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Discontinued)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Category)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Category.CategoryName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Supplier)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Supplier.CompanyName)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.ProductId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+    @Html.ValidationSummary(true,"",new{@class="text-danger"})
+    <div class="row g-3">
+        <div class="col-md-10">
+            @Html.LabelFor(model => model.ProductName, htmlAttributes : new{@class="form-label"})
+            @Html.TextBox("ProductName",Model.ProductName,new{@class="form-control", @readonly="readonly"})
+            @Html.ValidationMessage("ProductName",new{@class="text-danger"})
+        </div>
+    </div>
+    <div class="row g-3">
+        <div class="col-md-5">
+            @Html.LabelFor(model => model.CategoryId, htmlAttributes : new{@class="form-label"})
+            @Html.TextBox("Category.CategoryName",Model.Category.CategoryName,new{@class="form-control", @readonly="readonly"})
+            @Html.ValidationMessage("CategoryId",new{@class="text-danger"})
+        </div>
+        <div class="col-md-5">
+            @Html.LabelFor(model => model.SupplierId, htmlAttributes : new{@class="form-label"})
+            @Html.TextBox("Supplier.CompanyName",Model.Supplier.CompanyName,new{@class="form-control", @readonly="readonly"})
+            @Html.ValidationMessage("SupplierId",new{@class="text-danger"})
+        </div>
+    </div>
+    <div class="row g-3">
+        <div class="col-md-5">
+            @Html.LabelFor(model => model.UnitsInStock, htmlAttributes : new{@class="form-label"})
+            @Html.TextBox("UnitsInStock",Model.UnitsInStock,new{@class="form-control", @readonly="readonly"})
+            @Html.ValidationMessage("UnitsInStock",new{@class="text-danger"})
+        </div>
+        <div class="col-md-5">
+            @Html.LabelFor(model => model.UnitPrice, htmlAttributes : new{@class="form-label"})
+            @Html.TextBox("UnitPrice",Model.UnitPrice,new{@class="form-control", @readonly="readonly"})
+            @Html.ValidationMessage("UnitPrice",new{@class="text-danger"})
+        </div>
+    </div>
+    <div class="row g-3">
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.QuantityPerUnit, htmlAttributes : new{@class="form-label"})
+            @Html.TextBox("QuantityPerUnit",Model.QuantityPerUnit,new{@class="form-control", @readonly="readonly"})
+            @Html.ValidationMessage("QuantityPerUnit",new{@class="text-danger"})
+        </div>
+        <div class="col-md-3">
+            @Html.LabelFor(model => model.UnitsOnOrder, htmlAttributes : new{@class="form-label"})
+            @Html.TextBox("UnitsOnOrder",Model.UnitsOnOrder,new{@class="form-control", @readonly="readonly"})
+            @Html.ValidationMessage("UnitsOnOrder",new{@class="text-danger"})
+        </div>
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.ReorderLevel, htmlAttributes : new{@class="form-label"})
+            @Html.TextBox("ReorderLevel",Model.ReorderLevel,new{@class="form-control", @readonly="readonly"})
+            @Html.ValidationMessage("ReorderLevel",new{@class="text-danger"})
+        </div>
+    </div>
+    <br />
+    <div class="col-9">
+        <div class="row text-center text-lg-start">
+            @foreach (var item in Model.ProductPhotos)
+            {
+                <div class="col-lg-4 col-md-4 col-6">
+                    @Html.LabelFor(model => model.ProductPhotos, htmlAttributes : new{@class="form-label"})
+                    <img id="preview1" style="width:250px;height:250px" src="@Url.Content("~/Resources/images/" + item.PhotoFilename)" alt="Card image cap">
+                </div>
+            }
+        </div>
+    </div>
+    <br />
+    <a asp-action="Edit" class="btn btn-primary" asp-route-id="@Model.ProductId">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+}
+<script>
+    function previewImage(elemen, value) {
+        //store file image to variable files
+        const files = elemen.files[0];
+
+        //create object FileReader
+        const fileReader = new FileReader();
+
+        //read files from element input type
+        fileReader.readAsDataURL(files);
+
+        //send result base64 image to element html preview1
+        fileReader.onload = function (event) {
+            document.getElementById(value).src = event.target.result;
+        }
+    }
+
+    function clearPhoto(photo, preview) {
+        // isi tag input type file jadi kosong lagi atau clear
+        document.getElementById(photo).value = '';
+        document.getElementById(preview).src = '../Resources/images/default.jpeg';
+    }
+</script>

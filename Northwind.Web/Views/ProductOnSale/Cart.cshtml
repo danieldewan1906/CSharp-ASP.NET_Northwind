@@ -1,0 +1,61 @@
+﻿@model Northwind.Contracts.Dto.Product.ProductDto
+<h4>Cart Item</h4>
+
+<div class="card mb-4">
+    <h5 class="card-header">Items</h5>
+    <div class="card-body">
+        <div class="row gy-3">
+            <!-- Default Offcanvas -->
+            <div class="col-lg-3 col-md-6">
+                <img class="card-img-top" src="@Url.Content("~/Resources/images/" + Model.ProductPhotos.FirstOrDefault().PhotoFilename)" alt="Card image cap" style="width:200px;height:150px">
+            </div>
+
+            <!-- End Offcanvas -->
+            <div class="col-lg-3 col-md-6">
+                <div class="mt-3">
+                    <p>
+                        @Html.LabelFor(model=>model.UnitPrice)
+                    </p>
+                    <h5>@Html.DisplayFor(model=>model.UnitPrice)</h5>
+                </div>
+            </div>
+
+            <!-- Top Offcanvas -->
+            <div class="col-lg-3 col-md-6">
+                <div class="mt-3">
+                    <p>
+                        Quantity
+                    </p>
+                    <h5>@Html.DisplayFor(model=>model.QuantityPerUnit)</h5>
+                </div>
+            </div>
+
+            <!-- Bottom Offcanvas -->
+            <div class="col-lg-3 col-md-6">
+                <div class="mt-3">
+                    <p>
+                        Total Price
+                    </p>
+                    <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
+                        <div class="offcanvas-header">
+                            <h5 id="offcanvasBottomLabel" class="offcanvas-title">Offcanvas Bottom</h5>
+                            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                        </div>
+                        <div class="offcanvas-body">
+                            <p>
+                                Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print,
+                                graphic or web designs. The passage is attributed to an unknown typesetter in the 15th
+                                century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum
+                                for use in a type specimen book.
+                            </p>
+                            <button type="button" class="btn btn-primary me-2">Continue</button>
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Northwind.Domain.Models;
 using Northwind.Services.Abstraction;
 using System.Collections;
 using System.Threading.Tasks;
@@ -23,13 +24,27 @@ namespace Northwind.Web.Controllers
         }
 
         // GET: ProductOnSale/Details/5
-        public async Task<ActionResult> Details(int id)
+        public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var product = await _context.ProductService.GetProductOnSalesById((int)id, false);
+            var product = await _context.ProductService.GetProductPhotoOnSalesById((int)id, false);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return View(product);
+        }
+        public async Task<ActionResult> Cart(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var product = await _context.ProductService.GetProductPhotoOnSalesById((int)id, false);
             if (product == null)
             {
                 return NotFound();
