@@ -14,6 +14,8 @@ namespace Northwind.Services.Abstraction
 
         Task<OrderDto> GetOrderById(int orderId, bool trackChanges);
 
+        OrderDto CreateOrderId(OrderForCreateDto orderForCreateDto);
+
         void Insert(OrderForCreateDto orderForCreateDto);
 
         void Edit(OrderDto OrderDto);

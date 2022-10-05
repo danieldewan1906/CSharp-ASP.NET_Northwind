@@ -1,4 +1,6 @@
 ﻿using Northwind.Contracts.Dto.Category;
+using Northwind.Contracts.Dto.Order;
+using Northwind.Contracts.Dto.OrderDetail;
 using Northwind.Contracts.Dto.Product;
 using Northwind.Domain.Models;
 using System;
@@ -17,13 +19,15 @@ namespace Northwind.Services.Abstraction
         Task<ProductDto> GetProductById(int productId, bool trackChanges);
 
         Task<ProductDto> GetProductPhotoOnSalesById(int productId, bool trackChanges);
-        Task<ProductDto> GetProductOrderOnSalesById(int productId, bool trackChanges);
+
+        Task<ProductOrderGroupDto> GetProductOrderOnSalesById(int productId, bool trackChanges);
 
         Task<ProductPhotoGroupDto> GetProductPhotoGroupById(int productId, bool trackChanges);
 
         Task<IEnumerable<ProductDto>> GetProductOnSales(bool trackChanges);
 
         void CreateProductManyPhoto(ProductForCreateDto productForCreateDto, List<ProductPhotoCreateDto> productPhotoCreateDtos);
+        void CreateOrder(OrderForCreateDto orderForCreateDto, OrderDetailForCreateDto orderDetailCreateDtos);
 
         void EditProductPhoto(ProductDto productDto, List<ProductPhotoDto> productPhotoDto);
 

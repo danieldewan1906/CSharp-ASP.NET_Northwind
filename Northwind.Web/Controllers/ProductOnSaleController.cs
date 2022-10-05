@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Northwind.Domain.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Northwind.Contracts.Dto.Order;
+using Northwind.Contracts.Dto.OrderDetail;
+using Northwind.Contracts.Dto.Product;
 using Northwind.Services.Abstraction;
-using System.Collections;
+using System;
 using System.Threading.Tasks;
 
 namespace Northwind.Web.Controllers
@@ -21,6 +24,31 @@ namespace Northwind.Web.Controllers
         {
             var productOnSale = await _context.ProductService.GetProductOnSales(false);
             return View(productOnSale);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateOrder(ProductDto productDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var products = productDto;
+                var order = new OrderForCreateDto
+                {
+                    OrderDate = DateTime.Now,
+                    RequiredDate = DateTime.Now.AddDays(3)
+                };
+                var orderDetail = new OrderDetailForCreateDto
+                {
+                    ProductId = products.ProductId,
+                    UnitPrice = (decimal)products.UnitPrice,
+                    Quantity = Convert.ToInt16(products.QuantityPerUnit),
+                    Discount = 0
+                };
+                _context.ProductService.CreateOrder(order, orderDetail);
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(productDto);
         }
 
         // GET: ProductOnSale/Details/5

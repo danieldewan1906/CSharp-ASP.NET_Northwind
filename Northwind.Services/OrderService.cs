@@ -24,6 +24,15 @@ namespace Northwind.Services
             _mapper = mapper;
         }
 
+        public OrderDto CreateOrderId(OrderForCreateDto orderForCreateDto)
+        {
+            var order = _mapper.Map<Order>(orderForCreateDto);
+            _repositoryManager.OrderRepository.Insert(order);
+            _repositoryManager.Save();
+            var orderDto = _mapper.Map<OrderDto>(order);
+            return orderDto;
+        }
+
         public void Edit(OrderDto OrderDto)
         {
             var edit = _mapper.Map<Order>(OrderDto);

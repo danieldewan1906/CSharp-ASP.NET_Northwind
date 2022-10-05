@@ -1,27 +1,82 @@
 ﻿@model Northwind.Contracts.Dto.Product.ProductDto
-<h4>Details</h4>
 
-<center>
-    <div class="col-md-6 col-lg-4">
-        <div class="card mb-4">
-            <img class="card-img-top" src="@Url.Content("~/Resources/images/" + Model.ProductPhotos.FirstOrDefault().PhotoFilename)" alt="Card image cap">
+@{
+    ViewData["Title"] = "Details";
+}
+
+@using (Html.BeginForm("CreateOrder"
+, "ProductOnSale"
+, FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <body>
+        <div class="card">
             <div class="card-body">
-                <p class="card-text">
-                    <center><b>@Html.DisplayFor(model=>model.ProductName)</b></center>
-                </p>
-                <p class="card-text">
-                    @Html.LabelFor(model=>model.UnitPrice) :
-                    @Html.DisplayFor(model=>model.UnitPrice)
-                    <br>
-                    @Html.LabelFor(model => model.UnitsInStock, htmlAttributes : new{@class="form-label"}) :
-                    @Html.DisplayFor(model => model.UnitsInStock)
-                </p>
-                <a asp-action="Cart" asp-route-id="@Model.ProductId">
-                    <button class="btn btn-primary">
-                        <i class="bx bxs-cart-add"> Add Cart</i>
-                    </button>
-                </a>
+                <div class="card-title">
+                    @Html.HiddenFor(model => model.ProductId)
+                    <h4>@Model.ProductName</h4>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="col-md">
+                            <div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-inner">
+                                    @foreach (var item in Model.ProductPhotos)
+                                    {
+                                        if (Model.ProductPhotos.FirstOrDefault() == item)
+                                        {
+                                            <div class="carousel-item active">
+                                                <img src="@Url.Content("~/Resources/images/" + item.PhotoFilename)" class="card-img-top" alt="Image">
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="carousel-item">
+                                                <img src="@Url.Content("~/Resources/images/" + item.PhotoFilename)" class="card-img-top" alt="Image">
+                                            </div>
+                                        }
+                                    }
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <h3>Product Description</h3>
+                        <h5>Product Name</h5>
+                        <h5>Product Price</h5>
+                        <h5>Category Name</h5>
+                        <h5>Unit Stock</h5>
+                        <h5>Quantity</h5>
+                    </div>
+                    <div class="col-md-6 col-lg-1">
+                        <h3><br /></h3>
+                        <h5>:</h5>
+                        <h5>:</h5>
+                        <h5>:</h5>
+                        <h5>:</h5>
+                    </div>
+                    <div class="cold-md-6 col-lg-4">
+                        <h3><br /></h3>
+                        <h5>@Html.DisplayFor(model => model.ProductName)</h5>
+                        @Html.HiddenFor(model => model.UnitPrice)
+                        <h5>@Html.DisplayFor(model => model.UnitPrice)</h5>
+                        <h5>@Html.DisplayFor(model => model.Category.CategoryName)</h5>
+                        <h5>@Html.DisplayFor(model => model.UnitsInStock)</h5>
+                        @Html.TextBox("QuantityPerUnit",1,new{@type="number"})
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="margin-left:1200px">Buy Now</button>
             </div>
         </div>
-    </div>
-</center>
+    </body>
+}
+

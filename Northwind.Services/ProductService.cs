@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Northwind.Contracts.Dto.Order;
+using Northwind.Contracts.Dto.OrderDetail;
 using Northwind.Contracts.Dto.Product;
 using Northwind.Contracts.Dto.Supplier;
 using Northwind.Domain.Base;
@@ -21,6 +23,20 @@ namespace Northwind.Services
         {
             _repositoryManager = repositoryManager;
             _mapper = mapper;
+        }
+
+        public void CreateOrder(OrderForCreateDto orderForCreateDto, OrderDetailForCreateDto orderDetailCreateDtos)
+        {
+            //insert order
+            var order = _mapper.Map<Order>(orderForCreateDto);
+            _repositoryManager.OrderRepository.Insert(order);
+            _repositoryManager.Save();
+
+            //insert order detail
+            var orderDetail = _mapper.Map<OrderDetail>(orderDetailCreateDtos);
+            orderDetail.OrderId = order.OrderId;
+            _repositoryManager.OrderDetailRepository.Insert(orderDetail);
+            _repositoryManager.Save();
         }
 
         public void CreateProductManyPhoto(ProductForCreateDto productForCreateDto, List<ProductPhotoCreateDto> productPhotoCreateDtos)
@@ -85,10 +101,10 @@ namespace Northwind.Services
             return productDto;
         }
 
-        public async Task<ProductDto> GetProductOrderOnSalesById(int productId, bool trackChanges)
+        public async Task<ProductOrderGroupDto> GetProductOrderOnSalesById(int productId, bool trackChanges)
         {
             var productModel = await _repositoryManager.ProductRepository.GetProductOrderOnSalesById(productId, trackChanges);
-            var productDto = _mapper.Map<ProductDto>(productModel);
+            var productDto = _mapper.Map<ProductOrderGroupDto>(productModel);
             return productDto;
         }
 
