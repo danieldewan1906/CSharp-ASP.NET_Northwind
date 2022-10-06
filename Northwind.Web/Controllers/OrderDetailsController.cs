@@ -113,7 +113,6 @@ namespace Northwind.Web.Controllers
                 {
                     throw;
                 }
-                return RedirectToAction(nameof(Index));
             }
             var allProduct = await _context.ProductService.GetAllProduct(false);
             //ViewData["OrderId"] = new SelectList(_context.Orders, "OrderId", "OrderId", orderDetail.OrderId);

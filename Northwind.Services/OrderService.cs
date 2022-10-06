@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Northwind.Contracts.Dto.Order;
 using Northwind.Contracts.Dto.OrderDetail;
+using Northwind.Contracts.Dto.Product;
 using Northwind.Domain.Base;
 using Northwind.Domain.Entities;
 using Northwind.Domain.Models;
@@ -38,6 +39,13 @@ namespace Northwind.Services
             var edit = _mapper.Map<Order>(OrderDto);
             _repositoryManager.OrderRepository.Edit(edit);
             _repositoryManager.Save();
+        }
+
+        public async Task<OrderDto> FilterCustId(string custId, bool trackChanges)
+        {
+            var model = await _repositoryManager.OrderRepository.FilterCustId(custId, trackChanges);
+            var dto = _mapper.Map<OrderDto>(model);
+            return dto;
         }
 
         public async Task<IEnumerable<OrderDto>> GetAllOrder(bool trackChanges)

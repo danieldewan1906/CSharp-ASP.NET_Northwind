@@ -1,0 +1,12 @@
+﻿@model Northwind.Contracts.Dto.Order.OrderDto
+
+<h1>Checkout</h1>
+<p>@Model.OrderDate</p>
+<p>@Model.RequiredDate</p>
+<p>@Model.OrderId</p>
+@foreach (var item in Model.OrderDetails)
+{
+    @Html.LabelFor(modelItem => item.Product.ProductName, htmlAttributes : new{@class="form-label"})
+    @Html.DisplayFor(modelItem => item.Product.ProductName)
+}
+

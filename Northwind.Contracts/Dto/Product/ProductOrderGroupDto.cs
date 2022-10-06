@@ -11,7 +11,7 @@ namespace Northwind.Contracts.Dto.Product
     public class ProductOrderGroupDto
     {
         public ProductDto productDto { get; set; }
-        public OrderForCreateDto orderForCreateDto { get; set; }
-        public OrderDetailForCreateDto orderDetailForCreateDto { get; set; }
+        public OrderDto orderDto { get; set; }
+        public OrderDetailDto orderDetailDto { get; set; }
     }
 }

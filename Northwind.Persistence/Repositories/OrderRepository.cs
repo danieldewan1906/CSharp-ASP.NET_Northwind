@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Northwind.Domain.Entities;
 using Northwind.Domain.Models;
 using Northwind.Domain.Repositories;
 using Northwind.Persistence.Base;
@@ -21,14 +22,33 @@ namespace Northwind.Persistence.Repositories
             Update(Orders);
         }
 
+        public async Task<Order> FilterCustId(string custId, bool trackChanges)
+        {
+            return await FindByCondition(x => x.CustomerId.Equals(custId), trackChanges)
+                .Where(a => a.CustomerId == custId && a.ShippedDate == null)
+                .Include(c => c.Customer)
+                .Include(e => e.Employee)
+                .Include(od => od.OrderDetails)
+                .SingleOrDefaultAsync();
+        }
+
         public async Task<IEnumerable<Order>> GetAllOrder(bool trackChanges)
         {
-            return await FindAll(trackChanges).OrderBy(x => x.OrderId).ToListAsync();
+            return await FindAll(trackChanges)
+                .OrderBy(x => x.OrderId)
+                .Include(c => c.Customer)
+                .Include(e => e.Employee)
+                .Include(od => od.OrderDetails)
+                .ToListAsync();
         }
 
         public async Task<Order> GetOrderById(int OrdersId, bool trackChanges)
         {
-            return await FindByCondition(x => x.OrderId.Equals(OrdersId), trackChanges).SingleOrDefaultAsync();
+            return await FindByCondition(x => x.OrderId.Equals(OrdersId), trackChanges)
+                .Include(c => c.Customer)
+                .Include(e => e.Employee)
+                .Include(od => od.OrderDetails)
+                .SingleOrDefaultAsync();
         }
 
         public void Insert(Order Orders)

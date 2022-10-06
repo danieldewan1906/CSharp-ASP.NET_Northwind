@@ -30,6 +30,7 @@ namespace Northwind.Persistence.Repositories
                 .OrderBy(p => p.ProductId)
                 .Include(c => c.Category)
                 .Include(s => s.Supplier)
+                .Include(od => od.OrderDetails)
                 .ToListAsync();
         }
 
@@ -39,6 +40,7 @@ namespace Northwind.Persistence.Repositories
             return await FindByCondition(p => p.ProductId.Equals(productId), trackChanges)
                 .Include(c => c.Category)
                 .Include(s => s.Supplier)
+                .Include(od => od.OrderDetails)
                 .SingleOrDefaultAsync();
         }
 
@@ -64,6 +66,7 @@ namespace Northwind.Persistence.Repositories
                 .Include(c => c.Category)
                 .Include(s => s.Supplier)
                 .Include(a => a.ProductPhotos)
+                .Include(od => od.OrderDetails)
                 .SingleOrDefaultAsync();
             return products;
         }

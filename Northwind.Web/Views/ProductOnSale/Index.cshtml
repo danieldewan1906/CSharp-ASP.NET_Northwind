@@ -18,6 +18,9 @@
                         <br>
                         @Html.LabelFor(modelItem => item.UnitsInStock, htmlAttributes : new{@class="form-label"}) :
                         @Html.DisplayFor(modelItem => item.UnitsInStock)
+                        <br>
+                        @Html.LabelFor(modelItem => item.Category, htmlAttributes : new{@class="form-label"}) :
+                        @Html.DisplayFor(modelItem => item.Category.CategoryName)
                     </p>
                 </div>
             </div>

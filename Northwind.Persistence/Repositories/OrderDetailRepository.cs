@@ -25,13 +25,23 @@ namespace Northwind.Persistence.Repositories
         {
             return await FindAll(trackChanges).OrderBy(x => x.ProductId)
                 .Include(p => p.Product)
+                .Include(o => o.Order)
                 .ToListAsync();
+        }
+
+        public async Task<OrderDetail> GetOrderDetail(int OrderDetailsId,int productId, bool trackChanges)
+        {
+            return await FindByCondition(x => x.OrderId.Equals(OrderDetailsId) && x.ProductId.Equals(productId), trackChanges)
+                .Include(p => p.Product)
+                .Include(o => o.Order)
+                .SingleOrDefaultAsync();
         }
 
         public async Task<OrderDetail> GetOrderDetailById(int OrderDetailsId, bool trackChanges)
         {
-            return await FindByCondition(x => x.ProductId.Equals(OrderDetailsId), trackChanges)
+            return await FindByCondition(x => x.OrderId.Equals(OrderDetailsId), trackChanges)
                 .Include(p => p.Product)
+                .Include(o => o.Order)
                 .SingleOrDefaultAsync();
         }
 

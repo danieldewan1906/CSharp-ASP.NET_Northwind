@@ -12,6 +12,7 @@ namespace Northwind.Domain.Repositories
         Task<IEnumerable<Order>> GetAllOrder(bool trackChanges);
 
         Task<Order> GetOrderById(int OrdersId, bool trackChanges);
+        Task<Order> FilterCustId(string custId, bool trackChanges);
 
         void Insert(Order Orders);
 

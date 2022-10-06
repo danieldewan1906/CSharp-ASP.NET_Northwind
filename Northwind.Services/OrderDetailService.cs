@@ -2,6 +2,7 @@
 using Northwind.Contracts.Dto.Category;
 using Northwind.Contracts.Dto.OrderDetail;
 using Northwind.Domain.Base;
+using Northwind.Domain.Entities;
 using Northwind.Domain.Models;
 using Northwind.Services.Abstraction;
 using System;
@@ -38,9 +39,16 @@ namespace Northwind.Services
             return orderDetailsDto;
         }
 
-        public async Task<OrderDetailDto> GetOrderDetailById(int productId, bool trackChanges)
+        public async Task<OrderDetailDto> GetOrderDetail(int orderId, int productId, bool trackChanges)
         {
-            var model = await _repositoryManager.OrderDetailRepository.GetOrderDetailById(productId, trackChanges);
+            var model = await _repositoryManager.OrderDetailRepository.GetOrderDetail(orderId, productId, trackChanges);
+            var dto = _mapper.Map<OrderDetailDto>(model);
+            return dto;
+        }
+
+        public async Task<OrderDetailDto> GetOrderDetailById(int orderId, bool trackChanges)
+        {
+            var model = await _repositoryManager.OrderDetailRepository.GetOrderDetailById(orderId, trackChanges);
             var dto = _mapper.Map<OrderDetailDto>(model);
             return dto;
         }

@@ -31,21 +31,84 @@ namespace Northwind.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                // create order dan order detail baru
                 var products = productDto;
                 var order = new OrderForCreateDto
                 {
                     OrderDate = DateTime.Now,
-                    RequiredDate = DateTime.Now.AddDays(3)
+                    RequiredDate = DateTime.Now.AddDays(3),
+                    CustomerId = "SAID"
                 };
-                var orderDetail = new OrderDetailForCreateDto
+                var orders = await _context.OrderService.FilterCustId(order.CustomerId, false);
+                if (orders == null)
                 {
-                    ProductId = products.ProductId,
-                    UnitPrice = (decimal)products.UnitPrice,
-                    Quantity = Convert.ToInt16(products.QuantityPerUnit),
-                    Discount = 0
-                };
-                _context.ProductService.CreateOrder(order, orderDetail);
-                return RedirectToAction(nameof(Index));
+                    var createOrder = _context.OrderService.CreateOrderId(order);
+                    var orderDetail = new OrderDetailForCreateDto
+                    {
+                        ProductId = products.ProductId,
+                        OrderId = createOrder.OrderId,
+                        UnitPrice = (decimal)products.UnitPrice,
+                        Quantity = Convert.ToInt16(products.QuantityPerUnit),
+                        Discount = 0
+                    };
+                    _context.OrderDetailService.Insert(orderDetail);
+                    return RedirectToAction("Checkout", new { id = createOrder.OrderId });
+                }
+
+                // orderid, productid ada tapi shippeddate null
+                else
+                {
+                    OrderDetailDto orderDetails = new OrderDetailDto();
+                    orderDetails = await _context.OrderDetailService.GetOrderDetail(orders.OrderId, products.ProductId, false);
+                    if (orders.ShippedDate == null)
+                    {
+                        var orderDetail = new OrderDetailForCreateDto
+                        {
+                            ProductId = products.ProductId,
+                            OrderId = orders.OrderId,
+                            Quantity = Convert.ToInt16(products.QuantityPerUnit),
+                            UnitPrice = (decimal)products.UnitPrice * Convert.ToInt16(products.QuantityPerUnit),
+                            Discount = 0
+                        };
+                        if (orderDetails != null)
+                        {
+                            if (orderDetails.ProductId == products.ProductId)
+                            {
+                                var newQuantity = Convert.ToInt16(products.QuantityPerUnit);
+                                orderDetails.OrderId = orderDetail.OrderId;
+                                orderDetails.ProductId = orderDetail.ProductId;
+                                orderDetails.Quantity += newQuantity;
+                                orderDetails.UnitPrice += (decimal)products.UnitPrice * newQuantity;
+                                _context.OrderDetailService.Edit(orderDetails);
+                                return RedirectToAction("Index");
+                                /*_context.OrderDetailService.Insert(orderDetail);
+                                return RedirectToAction("Checkout", new { id = orders.OrderId });*/
+                            }
+                        }
+                        else
+                        {
+                            _context.OrderDetailService.Insert(orderDetail);
+                            return RedirectToAction("Index");
+                        }
+                        _context.OrderDetailService.Insert(orderDetail);
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        var createOrder = _context.OrderService.CreateOrderId(order);
+                        var orderDetail = new OrderDetailForCreateDto
+                        {
+                            ProductId = products.ProductId,
+                            OrderId = createOrder.OrderId,
+                            UnitPrice = (decimal)products.UnitPrice,
+                            Quantity = Convert.ToInt16(products.QuantityPerUnit),
+                            Discount = 0
+                        };
+                        //_context.ProductService.CreateOrder(order, orderDetail);
+                        _context.OrderDetailService.Insert(orderDetail);
+                        return RedirectToAction("Checkout", new { id = createOrder.OrderId });
+                    }
+                }
             }
 
             return View(productDto);
@@ -66,13 +129,13 @@ namespace Northwind.Web.Controllers
 
             return View(product);
         }
-        public async Task<ActionResult> Cart(int? id)
+        public async Task<ActionResult> Checkout(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var product = await _context.ProductService.GetProductPhotoOnSalesById((int)id, false);
+            var product = await _context.OrderService.GetOrderById((int)id, false);
             if (product == null)
             {
                 return NotFound();

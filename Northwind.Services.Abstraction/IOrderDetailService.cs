@@ -12,7 +12,8 @@ namespace Northwind.Services.Abstraction
     {
         Task<IEnumerable<OrderDetailDto>> GetAllOrderDetail(bool trackChanges);
 
-        Task<OrderDetailDto> GetOrderDetailById(int productId, bool trackChanges);
+        Task<OrderDetailDto> GetOrderDetail(int orderId, int productId, bool trackChanges);
+        Task<OrderDetailDto> GetOrderDetailById(int orderId, bool trackChanges);
 
         void Insert(OrderDetailForCreateDto OrderDetailForCreateDto);
 
