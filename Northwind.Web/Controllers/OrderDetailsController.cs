@@ -5,7 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Schema;
+using Northwind.Contracts.Dto.Order;
 using Northwind.Contracts.Dto.OrderDetail;
+using Northwind.Contracts.Dto.Product;
 using Northwind.Domain.Models;
 using Northwind.Persistence;
 using Northwind.Services.Abstraction;
@@ -26,6 +29,37 @@ namespace Northwind.Web.Controllers
         {
             var orderDetail = await _context.OrderDetailService.GetAllOrderDetail(false);
             return View(orderDetail);
+        }
+
+        public async Task<IActionResult> CartItem()
+        {
+            var customerId = "FAJAR";
+            var itemCart = await _context.OrderDetailService.GetAllCartItem(customerId, false);
+            return View(itemCart);
+        }
+
+        public async Task<IActionResult> CheckOut(List<OrderDetailDto> orderDetailDto)
+        {
+            OrderDetailDto orderDetail = new OrderDetailDto();
+            foreach (var item in orderDetailDto)
+            {
+                orderDetail.ProductId = item.ProductId;
+                orderDetail.OrderId = item.OrderId;
+                orderDetail.Quantity = item.Quantity;
+                orderDetail.UnitPrice = item.UnitPrice;
+                orderDetail.Discount = 0;
+                _context.OrderDetailService.Edit(orderDetail);
+            }
+
+            OrderDto order = new OrderDto
+            {
+                OrderId = orderDetail.OrderId,
+                CustomerId = "FAJAR",
+                ShippedDate = DateTime.Now
+            };
+            _context.OrderService.Edit(order);
+
+            return RedirectToAction("Index", "ProductOnSale", new { area="" });
         }
 
         // GET: OrderDetails/Details/5

@@ -4,17 +4,17 @@
     ViewData["Title"] = "Details";
 }
 
-@using (Html.BeginForm("CreateOrder"
+@using (Html.BeginForm("CreateOrderAddCart"
 , "ProductOnSale"
 , FormMethod.Post))
 {
     @Html.AntiForgeryToken()
-
     <body>
         <div class="card">
             <div class="card-body">
                 <div class="card-title">
                     @Html.HiddenFor(model => model.ProductId)
+                    @Html.HiddenFor(model => model.UnitPrice)
                     <h4>@Model.ProductName</h4>
                 </div>
                 <div class="row">
@@ -67,16 +67,25 @@
                     <div class="cold-md-6 col-lg-4">
                         <h3><br /></h3>
                         <h5>@Html.DisplayFor(model => model.ProductName)</h5>
-                        @Html.HiddenFor(model => model.UnitPrice)
                         <h5>@Html.DisplayFor(model => model.UnitPrice)</h5>
                         <h5>@Html.DisplayFor(model => model.Category.CategoryName)</h5>
                         <h5>@Html.DisplayFor(model => model.UnitsInStock)</h5>
-                        @Html.TextBox("QuantityPerUnit",1,new{@type="number"})
+                        @Html.TextBox("QuantityPerUnit",1,new{@type="number", @id="quantity"})
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary" style="margin-left:1200px">Buy Now</button>
+                @*<a asp-action="CreateOrderBuyNow">
+                    <input type="button" class="btn btn-secondary" value="Buy Now">
+                </a>*@
+            <input type="submit" class="btn btn-secondary" value="Buy Now" formaction="@Url.Action("CreateOrderBuyNow")" formmethod="post">
+                @*<input type="submit" class="btn btn-primary" value="Add Cart" formaction="CreateOrderAddCart">*@
+                <button type="submit" class="btn btn-primary" style="margin-left:1200px">Add Cart</button>
             </div>
         </div>
     </body>
 }
+@*<script>
+    function getQuantity(){
+        var input = document.getElementById("quantity").value;
+    }
+</script>*@
 

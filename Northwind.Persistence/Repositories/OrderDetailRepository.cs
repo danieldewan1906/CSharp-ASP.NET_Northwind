@@ -21,6 +21,18 @@ namespace Northwind.Persistence.Repositories
             Update(OrderDetails);
         }
 
+        public async Task<IEnumerable<OrderDetail>> GetAllCartItem(string custId, bool trackChanges)
+        {
+            return await FindAll(trackChanges)
+                .Where(o => o.Order.CustomerId == custId && o.Order.ShippedDate == null &&
+                o.Product.ProductPhotos.Any(y => y.PhotoProductId == o.ProductId))
+                .Include(o => o.Order)
+                .Include(p => p.Product)
+                .Include(pp => pp.Product.ProductPhotos)
+                .OrderBy(x => x.OrderId)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<OrderDetail>> GetAllOrderDetail(bool trackChanges)
         {
             return await FindAll(trackChanges).OrderBy(x => x.ProductId)
