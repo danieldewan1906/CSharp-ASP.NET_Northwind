@@ -12,6 +12,7 @@ using Northwind.Persistence;
 using Northwind.Persistence.Base;
 using Northwind.Services;
 using Northwind.Services.Abstraction;
+using Northwind.Web.Extensions;
 using Northwind.Web.Models;
 using Northwind.Web.Repository;
 using System;
@@ -40,7 +41,12 @@ namespace Northwind.Web
             services.AddScoped<IRepositoryManager, RepositoryManager>();
             services.AddScoped<IServiceManager, ServiceManager>();
             services.AddScoped<IUtilityService, UtilityService>();
+
             services.AddAutoMapper(typeof(Startup));
+
+            //add configureIdentity here from ServiceExtensions
+            services.ConfigureIdentity();
+            services.ConfigureApplicationCookie(o => o.LoginPath = "/Authentication/Login");
 
             // register dbcontext
             services.AddDbContext<NorthwindContext>(opts =>
@@ -74,6 +80,8 @@ namespace Northwind.Web
 
             app.UseRouting();
 
+            // call useAuthentication
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

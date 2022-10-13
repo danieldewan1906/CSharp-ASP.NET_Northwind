@@ -37,7 +37,7 @@ namespace Northwind.Web.Controllers
                 {
                     OrderDate = DateTime.Now,
                     RequiredDate = DateTime.Now.AddDays(3),
-                    CustomerId = "FAJAR"
+                    CustomerId = "DANIL"
                 };
                 var orders = await _context.OrderService.FilterCustId(order.CustomerId, false);
                 if (orders == null)
@@ -52,7 +52,7 @@ namespace Northwind.Web.Controllers
                         Discount = 0
                     };
                     _context.OrderDetailService.Insert(orderDetail);
-                    return RedirectToAction("Checkout", new { id = createOrder.OrderId });
+                    return RedirectToAction("CartItem", "OrderDetails", new { id = createOrder.OrderId });
                 }
 
 
@@ -71,6 +71,8 @@ namespace Northwind.Web.Controllers
                             UnitPrice = (decimal)products.UnitPrice * Convert.ToInt16(products.QuantityPerUnit),
                             Discount = 0
                         };
+
+                        //melakukan order dengan product yang sama
                         if (orderDetails != null)
                         {
                             // melakukan edit jika product yang diorder sama
@@ -83,19 +85,15 @@ namespace Northwind.Web.Controllers
                                 orderDetails.UnitPrice += (decimal)products.UnitPrice * newQuantity;
                                 _context.OrderDetailService.Edit(orderDetails);
                                 return RedirectToAction("CartItem", "OrderDetails", new { });
-                                /*_context.OrderDetailService.Insert(orderDetail);
-                                return RedirectToAction("Checkout", new { id = orders.OrderId });*/
                             }
                         }
                         else
                         {
                             _context.OrderDetailService.Insert(orderDetail);
-                            return RedirectToAction("Index");
+                            return RedirectToAction("CartItem", "OrderDetails", new { id = orderDetail.OrderId });
                         }
-                        _context.OrderDetailService.Insert(orderDetail);
-                        return RedirectToAction("Index");
                     }
-                    else
+                    /*else
                     {
                         var createOrder = _context.OrderService.CreateOrderId(order);
                         var orderDetail = new OrderDetailForCreateDto
@@ -109,7 +107,7 @@ namespace Northwind.Web.Controllers
                         //_context.ProductService.CreateOrder(order, orderDetail);
                         _context.OrderDetailService.Insert(orderDetail);
                         return RedirectToAction("Checkout", new { id = createOrder.OrderId });
-                    }
+                    }*/
                 }
             }
 
@@ -126,16 +124,18 @@ namespace Northwind.Web.Controllers
                 {
                     OrderDate = DateTime.Now,
                     RequiredDate = DateTime.Now.AddDays(3),
-                    CustomerId = "FAJAR"
+                    CustomerId = "DANIL"
                 };
+                var latestOrder = _context.OrderService.CreateOrderId(order);
                 var orderDetail = new OrderDetailForCreateDto
                 {
                     ProductId = products.ProductId,
+                    OrderId = latestOrder.OrderId,
                     UnitPrice = (decimal)products.UnitPrice,
                     Quantity = Convert.ToInt16(products.QuantityPerUnit),
                     Discount = 0
                 };
-                _context.ProductService.CreateOrder(order, orderDetail);
+                _context.OrderDetailService.Insert(orderDetail);
                 return RedirectToAction("Checkout", new { id = orderDetail.OrderId });
             }
             return View();
