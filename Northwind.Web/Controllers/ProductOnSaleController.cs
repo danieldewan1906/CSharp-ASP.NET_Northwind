@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Northwind.Contracts.Dto.Order;
@@ -19,6 +20,7 @@ namespace Northwind.Web.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "Administrator")]
         // GET: ProductOnSale
         public async Task<ActionResult> Index()
         {

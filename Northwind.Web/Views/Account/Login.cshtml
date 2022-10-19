@@ -1,0 +1,48 @@
+﻿@model Northwind.Contracts.Dto.Authentication.UserLoginDto
+
+@{
+    Layout = "_AuthLayout";
+}
+
+<p class="mb-4">Please sign-in to your account and start the adventure</p>
+
+<form asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]" class="mb-3" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="mb-3">
+        <label asp-for="Email" class="form-label"></label>
+        <input asp-for="Email" class="form-control" 
+            placeholder="Enter your email"
+            autofocus
+        />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Password" class="form-label"></label>
+        <input asp-for="Password" class="form-control" 
+            placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" 
+        />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <div class="form-check">
+            <input asp-for="RememberMe" class="form-check-input" />
+            <label class="form-check-label" for="remember-me"> Remember Me </label>
+        </div>
+    </div>
+    <div class="mb-3">
+        <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
+    </div>
+</form>
+
+<p class="text-center">
+    <span>New on our platform?</span>
+    <a asp-action="Register">
+        <span>Create an account</span>
+    </a>
+</p>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }
