@@ -1,0 +1,137 @@
+﻿<h3>Apex Chart</h3>
+
+<select id="categoryName">
+    <option value="">Choose</option>
+    <option value="Liquid">Liquid</option>
+    <option value="Beverages">Beverages</option>
+    <option value="Toys">Movie</option>
+</select>
+@*<input id="categoryName" type="text" placeholder="Category Name" value="Liquid" />*@
+<input id="categoryId" type="text" />
+<input id="description" type="text" />
+<div id="chart"></div>
+<div id="pieChart"></div>
+
+@section scripts{
+    <script type="text/javascript">
+        var category = $("#categoryName");
+        category.change(function () {
+            $.ajax({
+                type: "GET",
+                url: "/ClientSide/GetTotalProductByCategory/?categoryName=" + category.val(),
+                success: function (result) {
+                    console.log(result);
+                    for (let i = 0; i < result.length; i++) {
+                        $("#categoryId").val(result[i].categoryId)
+                        $("#description").val(result[i].description)
+                    }
+                },
+                error: function (result) {
+                    console.log(result);
+                }
+            });
+        })
+
+
+
+
+    </script>
+}
+    @*$(document).ready(function(){
+                let categoryName = $('#categoryName').val();
+
+                $.ajax({
+                    type: "GET",
+                    url: "/ClientSide/GetTotalProductByCategory/?categoryName="+categoryName,
+                    success: function (result) {
+                        console.log(result);
+                        for(let i = 0; i < result.length; i++){
+                        $("#categoryId").val(result[i].categoryId)
+                        $("#description").val(result[i].description)
+                    }
+                },
+                error: function (result) {
+                    console.log(result);
+                }
+            });
+        });*@
+    @*function renderBarChart(dataSeries, dataCategories) {
+            var options = {
+                series: [{
+                    data: dataSeries
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 350
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        horizontal: true,
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                xaxis: {
+                    categories: dataCategories,
+                }
+            };
+
+            var chart = new ApexCharts(document.querySelector("#chart"), options);
+            chart.render();
+        };
+
+        function renderPieChart(dataSeries, dataCategories){
+            var options = {
+                series: dataSeries,
+                chart: {
+                    width: 380,
+                    type: 'pie',
+                },
+                labels: dataCategories,
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            };
+
+            var chart = new ApexCharts(document.querySelector("#pieChart"), options);
+            chart.render();
+        }
+
+        function renderChart(){
+            var options = {
+                series: [{
+                    data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380]
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 350
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        horizontal: true,
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                xaxis: {
+                    categories: ['South Korea', 'Canada', 'United Kingdom', 'Netherlands', 'Italy', 'France', 'Japan',
+                        'United States', 'China', 'INDONESIA'
+                    ],
+                }
+            };
+
+            var chart = new ApexCharts(document.querySelector("#chart"), options);
+            chart.render();
+        };*@

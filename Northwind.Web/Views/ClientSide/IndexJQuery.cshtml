@@ -1,0 +1,100 @@
+﻿<h3>JQuery</h3>
+<h4 id="today"></h4>
+
+<input id="firstName" placeholder="First Name" class="form-control" />
+<button id="btnFirstName" class="btn btn-primary">Click Sekarang</button>
+
+<input id="lastName" placeholder="Last Name" class="form-control" />
+<button class="btn btn-danger">Click Nanti Setelah First Name</button>
+
+<table>
+    <thead>
+    <th>Product</th>
+    <th>Price</th>
+    <th>Quantity</th>
+    <th>Total Price</th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <input id="product" value="Bike" readonly />
+            </td>
+            <td>
+                <input id="price" value="15" />
+            </td>
+            <td>
+                <input type="number" id="qty" value="1" />
+            </td>
+            <td>
+                <input id="total" value="0" readonly />
+            </td>
+            <td>
+                <button id="btnAdd">Add Item</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<form id="formSubmit">
+    <input id="CategoryName" placeholder="Category Name" class="form-control"/>
+    <input id="Description" placeholder="Description" class="form-control"/>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+@section scripts{
+    <script type="text/javascript">
+        let today = new Date();
+
+        $(document).ready(function(){
+            console.log("document.ready");
+            $("#today").text(today);
+        });
+
+        $("#btnFirstName").on('click',()=>{
+            $("#firstName").val("Daniel");
+        });
+
+        $(".btn-danger").on('click', () => {
+            $("#lastName").val("Dewanto");
+        });
+
+        $("#btnAdd").on('click',() => {
+            let qty = $("#qty").val();
+            let price = $("#price").val();
+
+            let counter = qty;
+            counter++;
+            $("#qty").val(counter);
+
+            $("#total").val(parseInt(qty) * parseFloat(price))
+        });
+
+        $("#formSubmit").submit((e) => {
+            // mencegah supaya page tidak langsung submit ke server
+            e.preventDefault();
+
+            // membuat variable sesuai dengan variable yang ada di controller
+            let categoryForCreateDto = {
+                CategoryName: $("#CategoryName").val(),
+                Description: $("#Description").val()
+            };
+
+            //mengirim object via ajax 
+            $.ajax({
+                type:"POST",
+                url: "/ClientSide/PostCategory",
+                data: JSON.stringify(categoryForCreateDto),
+                datatype: "json",
+                contentType: "application/json",
+                success: function(result){
+                    console.log(result);
+                    alert('Data has been saved')
+                },
+                error: function(result){
+                    console.log(result);
+                    alert('Data Error')
+                }
+            });
+        })
+    </script>
+}

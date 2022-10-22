@@ -1,13 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Northwind.Domain.Base;
+using Northwind.Domain.Dto;
 using Northwind.Domain.Models;
 using Northwind.Domain.Repositories;
 using Northwind.Persistence.Base;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -101,6 +101,55 @@ namespace Northwind.Persistence.Repositories
                 .Include(a => a.ProductPhotos)
                 .SingleOrDefaultAsync();
             return products;
+        }
+
+        public async Task<IEnumerable<TotalProductByCategory>> GetTotalProductByCategory()
+        {
+            /*var pName = new SqlParameter("@paramCategory", "Liquid");*/
+
+            var rawSQL = await _dbContext.TotalProductByCategorySQL
+                .FromSqlRaw("select c.CategoryName, count(p.ProductID) TotalProduct from products p " +
+                "join categories c " +
+                "on p.CategoryID = c.CategoryID " +
+                "group by c.CategoryName")
+                .Select(p => new TotalProductByCategory
+                {
+                    CategoryName = p.CategoryName,
+                    TotalProduct = p.TotalProduct
+                })
+                .OrderBy(p => p.TotalProduct)
+                .ToListAsync();
+            return rawSQL;
+        }
+
+        public async Task<IEnumerable<Category>> GetTotalProductCategoryById(string categoryName)
+        {
+            var cateId = new SqlParameter("@paramId", categoryName);
+
+            /*var rawSQL = await _dbContext.TotalProductByCategorySQL
+                .FromSqlRaw("select c.CategoryName, count(p.ProductID) TotalProduct from products p " +
+                "join categories c " +
+                "on p.CategoryID = c.CategoryID " +
+                "where c.CategoryName = @paramId " +
+                "group by c.CategoryName",cateId)
+                .Select(p => new TotalProductByCategory
+                {
+                    CategoryName = p.CategoryName,
+                    TotalProduct = p.TotalProduct
+                })
+                .OrderBy(p => p.TotalProduct)
+                .ToListAsync();*/
+            var rawSQL = await _dbContext.Categories
+                .FromSqlRaw("select * from Categories " +
+                "where CategoryName = @paramId", cateId)
+                .Select(p => new Category
+                {
+                    CategoryId = p.CategoryId,
+                    Description = p.Description
+                })
+                .OrderBy(p => p.CategoryId)
+                .ToListAsync();
+            return rawSQL;
         }
     }
 }

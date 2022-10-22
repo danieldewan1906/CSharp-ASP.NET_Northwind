@@ -1,0 +1,79 @@
+﻿<h3>JavaScript</h3>
+<h4 id="today"></h4>
+
+<input id="firstName" placeholder="First Name" class="form-control"/>
+<button id="btnFirstName" class="btn btn-primary">Click Sekarang</button>
+
+<input id="lastName" placeholder="Last Name" class="form-control" />
+<button class="btn btn-danger">Click Nanti Setelah First Name</button>
+
+<table>
+    <thead>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Total Price</th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <input id="product" value="Bike" readonly/>
+            </td>
+            <td>
+                <input id="price" value="15"/>
+            </td>
+            <td>
+                <input type="number" id="qty" value="1"/>
+            </td>
+            <td>
+                <input id="total" value="0" readonly/>
+            </td>
+            <td>
+                <button id="btnAdd" onclick="calc()">Add Item</button>
+            </td>
+
+        </tr>
+    </tbody>
+</table>
+
+@section scripts{
+    <script type="text/javascript">
+        let today = new Date();
+
+        // search element by id
+        var elH2 = document.getElementById("today");
+        elH2.textContent=today;
+
+        var elFirstName = document.getElementById("firstName");
+        elFirstName.value = "Daniel";
+
+        // arrow function
+        document.getElementById("btnFirstName").addEventListener('click', () => {
+            if (elFirstName.value == "Daniel") {
+                elFirstName.value = "TARA MAKJREEENGGGG"
+            } else if (elFirstName.value == "TARA MAKJREEENGGGG") {
+                elFirstName.value = "Daniel"
+            }
+        });
+
+        var elLastName = document.getElementById("lastName");
+        elLastName.value = "Dewanto";
+
+        // anonymous function
+        document.querySelector('.btn-danger').onclick = function(e){
+            if (elLastName.value == "Dewanto") {
+                elLastName.value = "ROARRRRRRR!!!!"
+            } else if (elLastName.value == "ROARRRRRRR!!!!") {
+                elLastName.value = "Dewanto"
+            }
+        }
+
+        function calc(){
+            let qty = document.getElementById("qty").value;
+            let price = document.getElementById("price").value;
+            let total = document.getElementById("total");
+            total.value = price;
+            total.value = parseFloat(qty * price);
+        }
+    </script>
+}
